@@ -2,7 +2,7 @@
 #include <FileConstants.au3>
 
 ;create backup folder path
-Local $sFileLocation = InputBox("Input", "Please input file location: ", "C:\XML_Backup\", "", _  ;C:\MESPARSER\PCBA\DONE\sgp2smt201\
+Local $sFileLocation = InputBox("Input", "Please input file location: ", "C:\XML_Backup\", "", _  
 			 -1, -1, 540, 200)
 Local $sFolderPath = $sFileLocation
 Local $bStatus = DirCreate($sFolderPath)
