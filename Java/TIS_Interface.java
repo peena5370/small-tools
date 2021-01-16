@@ -1,4 +1,8 @@
-package com.tispackages;
+/*
+* Developed by: peena5370
+* Published date: 8/Jan/2021
+*/
+package com.packages;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,29 +37,48 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+/*
+ * 1. A GUI interface for checking the process in production, it acts as a tool that get the data from the user and parse the required details through SOAP web service to the web server 
+ * 	  and response to the interface after getting the results from the web server.
+ * 2. This GUI interface also act as a tool to replace tools for creating a text file ball barcodelist.bar.
+ * */
 public class TIS_Interface {
-	
+	/*
+	 * Jlabel was used as a place to store values from the input components, it wont shows up at the GUI
+	 * It just use for getText() value from the action listener actionPerformed(), because the actionPerformed() function wont return value, 
+	 * so I use it as a place to get value from the input component after performing the events from the components.
+	 * */
 	private JLabel processLabel = new JLabel("");
 	private JLabel customerLabel = new JLabel("");
 	private JLabel partNumberLabel = new JLabel("");
-	private static JLabel panelLabel = new JLabel("24");
+	private static JLabel panelLabel = new JLabel("");
+	
+	/*
+	 * The resultButton, boardNumb and serialNumb component is declared outside the function for getting the events performed
+	 * */
 	private JButton resultButton = new JButton("PASS");
+	private JTextField panelNumb = new JTextField(3);
 	private static JTextField boardNumb = new JTextField(3);
 	private JTextField serialNumb = new JTextField(15);
 	
+	/*
+	 * Declare newArrList as a container to keeps the input from the JTextField serialNumb,
+	 * it will keeps the input data from input box and grow until a certain arrList.size(), 
+	 * and clear the array list(arrList.clear()) when it is not used.
+	 * */
 	public ArrayList<String> newArrList = new ArrayList<String>();
-
+	
+	/*
+	 * Declare the main function for the TIS_Interface()
+	 * */
 	public static void main(String[] args) {
 		new TIS_Interface();
-		
-
 	}
-	
-	public TIS_Interface() {
-		
-		
-		JFrame frame = new JFrame("Process Checking Tool - MESTIS_v1.0");
-		
+
+	public TIS_Interface() {	
+//		frame for GUI interface, name declared as below
+		JFrame frame = new JFrame("Process Checking Tool_v1.0");
+
 		JPanel processPanel = new JPanel();
 		processPanel.setBorder(new EmptyBorder(5,5,0,5));
 		processPanel.setLayout(new GridLayout(1, 4, 5, 5));
@@ -65,23 +88,18 @@ public class TIS_Interface {
 		String[] smtProcess = {"AOI_B","AOI_T","XRAY1"};
 		JComboBox combo3 = new JComboBox(smtProcess);
 		combo3.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String actionProcess = combo3.getSelectedItem().toString();
 				processLabel.setText(actionProcess);
-				System.out.println("Process: " + actionProcess);
-			}
-			
+			}	
 		});
 		
 		processPanel.add(combo3);
 		
-		JTextField panelNumb = new JTextField(3);
-		panelNumb.setFont(new Font("Arial",Font.PLAIN,18));
-		processPanel.add(panelNumb);
 
-		
+		panelNumb.setFont(new Font("Arial",Font.PLAIN,18));
+		processPanel.add(panelNumb);	
 
 		boardNumb.setFont(new Font("Arial",Font.PLAIN,18));
 		boardNumb.setText("0");
@@ -101,7 +119,8 @@ public class TIS_Interface {
 		
 		JPanel inputPanel = new JPanel();
 		inputPanel.setBorder(new EmptyBorder(5,5,-35,15));
-		inputPanel.setLayout(new GridLayout(4, 1, 5, 5));	
+		inputPanel.setLayout(new GridLayout(4, 1, 5, 5));
+		
 		JComboBox combo1 = new JComboBox();
 		String filePath1 = "src/res/customer.txt";
 		File customerFile = new File(filePath1);
@@ -117,16 +136,14 @@ public class TIS_Interface {
 			e.printStackTrace();
 		}
 		combo1.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String actionCustomer = combo1.getSelectedItem().toString();
 				customerLabel.setText(actionCustomer);
-				System.out.println("Customer: " + actionCustomer);
-			}
-			
+			}	
 		});
 		inputPanel.add(combo1);	
+		
 		JComboBox combo2 = new JComboBox();
 		String filePath2 = "src/res/divNumb.txt";
 		File divNumber = new File(filePath2);	
@@ -142,10 +159,8 @@ public class TIS_Interface {
 			e.printStackTrace();
 		}
 		combo2.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-//				still left setup panel number at 
 				String actionPartNumber = combo2.getSelectedItem().toString();
 				partNumberLabel.setText(actionPartNumber);
 					
@@ -167,26 +182,20 @@ public class TIS_Interface {
 							int i = Integer.parseInt(splitPartNumber[1]);
 							if(actionPartNumber.equals(partNumber)) {
 								panelNumb.setText(splitPartNumber[1]);
-								getPanelLabel().setText(splitPartNumber[1]);
-								System.out.println("Panel number: " + i);
+								boardNumb.setText("0");
+								newArrList.clear();
 							}
-						}
-						
+						}	
 					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
-				
-				System.out.println("Part Number: " + actionPartNumber);
-			}
-			
+			}	
 		});
-		inputPanel.add(combo2);
-		
+		inputPanel.add(combo2);	
 		
 		serialNumb.setFont(new Font("Arial",Font.PLAIN,18));
 		serialNumb.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String serial = serialNumb.getText().toString();
@@ -194,20 +203,20 @@ public class TIS_Interface {
 				String partNumb = partNumberLabel.getText();
 				String process = processLabel.getText();
 				serialNumb.selectAll();
-				System.out.println("Serial:" + serial);
 				if(serial.contentEquals("1")) {
+					int j = Integer.parseInt(boardNumb.getText()) + 1;
+					String k = Integer.toString(j);
+					boardNumb.setText(k);
 					newArrList.add(serialNumb.getText());
-						int j = Integer.parseInt(boardNumb.getText()) + 1;
-						String k = Integer.toString(j);
-						boardNumb.setText(k);
-						while(boardNumb.getText().contentEquals(panelNumb.getText())) {
-							boardNumb.setText("0");
-						}
-						aoiBarcode(partNumb, boardNumb, serial);
+					aoiBarcode(partNumb);
+					while(boardNumb.getText().contentEquals(panelNumb.getText())) {
+						boardNumb.setText("0");
+						newArrList.clear();
+					}
 				}else {
-					new SoapTIS().SOAPTIS(process, customer, serial, partNumb);
+					new TIS_SOAP().SOAPTIS(process, customer, serial, partNumb);
 					
-					File resultPath = new File("D:\\Temp\\AOI_AXI\\Result.xml");
+					File resultPath = new File("src/res/result.xml");
 					try {
 						SAXReader reader = new SAXReader();
 						Document doc = reader.read(resultPath);
@@ -228,12 +237,17 @@ public class TIS_Interface {
 //								must use equals, if use "==" will going to fail result
 									resultButton.setBackground(Color.GREEN);
 									resultButton.setText("PASS");
+									newArrList.add(serialNumb.getText());
+									aoiBarcode(partNumb);
+									System.out.println(newArrList);
 									int j = Integer.parseInt(boardNumb.getText()) + 1;
 									String k = Integer.toString(j);
 									boardNumb.setText(k);
 									while(boardNumb.getText().contentEquals(panelNumb.getText())) {
 										boardNumb.setText("0");
+										newArrList.clear();
 									}
+									
 								} else {
 									resultButton.setBackground(Color.RED);
 									resultButton.setText("FAIL");
@@ -244,11 +258,8 @@ public class TIS_Interface {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 						}
-					newArrList.add(serialNumb.getText());
-					aoiBarcode(partNumb, boardNumb, serial);
 				}
-			}
-			
+			}	
 		});
 		inputPanel.add(serialNumb);
 		frame.getContentPane().add(inputPanel, BorderLayout.CENTER);
@@ -264,24 +275,25 @@ public class TIS_Interface {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Integer count = 0;
 				String serial = serialNumb.getText().toString();
 				String customer = customerLabel.getText();
 				String partNumb = partNumberLabel.getText();
 				String process = processLabel.getText();
 				serialNumb.selectAll();
-				System.out.println("Serial:" + serial);
 				if(serial.contentEquals("1")) {
 					int j = Integer.parseInt(boardNumb.getText()) + 1;
 					String k = Integer.toString(j);
 					boardNumb.setText(k);
+					newArrList.add(serialNumb.getText());
+					aoiBarcode(partNumb);
 					while(boardNumb.getText().contentEquals(panelNumb.getText())) {
 						boardNumb.setText("0");
+						newArrList.clear();
 					}
 				}else {
-					new SoapTIS().SOAPTIS(process, customer, serial, partNumb);	
+					new TIS_SOAP().SOAPTIS(process, customer, serial, partNumb);
 					
-					File resultPath = new File("D:\\Temp\\AOI_AXI\\Result.xml");
+					File resultPath = new File("src/res/result.xml");
 					try {
 						SAXReader reader = new SAXReader();
 						Document doc = reader.read(resultPath);
@@ -302,12 +314,17 @@ public class TIS_Interface {
 //								must use equals, if use "==" will going to fail result
 									resultButton.setBackground(Color.GREEN);
 									resultButton.setText("PASS");
+									newArrList.add(serialNumb.getText());
+									aoiBarcode(partNumb);
+									System.out.println(newArrList);
 									int j = Integer.parseInt(boardNumb.getText()) + 1;
 									String k = Integer.toString(j);
 									boardNumb.setText(k);
 									while(boardNumb.getText().contentEquals(panelNumb.getText())) {
 										boardNumb.setText("0");
+										newArrList.clear();
 									}
+									
 								} else {
 									resultButton.setBackground(Color.RED);
 									resultButton.setText("FAIL");
@@ -322,7 +339,6 @@ public class TIS_Interface {
 			}	
 		});
 		
-		
 		resultButton.setBackground(Color.GREEN);
 
 		statusPanel.add(TISButton);
@@ -334,41 +350,43 @@ public class TIS_Interface {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-
+	
+	/*
+	 * getter and setter for panelLabel
+	 * */
 	public static JLabel getPanelLabel() {
 		return panelLabel;
 	}
-
 	public void setPanelLabel(JLabel panelLabel) {
 		this.panelLabel = panelLabel;
 	}
-	
-	public static JTextField getBoardNumb() {
-		return boardNumb;
-	}
-	
-	public void setBoardNumb(JTextField boardNumb) {
-		this.boardNumb = boardNumb;
-	}
-	
-	public void aoiBarcode(String partNumb, JTextField boardNumb, String serial) {
-		File filePath = new File("src/res/barcodelist.bar");
+
+	/*
+	 * This function use for creating barcodelist.bar file for the machine
+	 * 
+	 * */
+	public void aoiBarcode(String partNumb) {
+		File filePath = new File("src/res/listbarcode.txt");
 		try {
+//			declare the date and time format using SimpleDateFormat, may implement with other method of setting datetime format
 			SimpleDateFormat dateTimeFormmater = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			Date nowTime = new Date();
 			String localTime = dateTimeFormmater.format(nowTime);
 			FileWriter fileWriter = new FileWriter(filePath);
 				fileWriter.write("#Board: " + partNumb + ", " + localTime + "\r\n\r\n" + "#Number Of Panel	Barcode\r\n");
-				
-					for(String arr : newArrList) {
-						String boardNumber = panelLabel.getText();
-						int integerNumber = Integer.parseInt(boardNumber);
-						for(int j=0;j<integerNumber;j++) {
-							fileWriter.write("Barcode#" + j + "	*" + arr + "\r\n");
-						}
-							
+//				loop through the array list
+				for(int i=0; i< newArrList.size();i++) {
+					int panNumber = Integer.parseInt(panelNumb.getText());
+//					an if-else statement to catch the size of the arraylist, if the size value is bigger than the actual panel number size, clear the list
+//					else, write the array list value into the text file 
+					if(panNumber < newArrList.size()) {
+						newArrList.clear();
+					} else {
+						int j = 0;
+						j = i + 1;
+							fileWriter.write("Barcode#" + j + "	*" + newArrList.get(i).toString() + "\r\n");	
 					}
-					
+				}
 				fileWriter.write("#End");
 				fileWriter.close();
 			
@@ -376,5 +394,4 @@ public class TIS_Interface {
 			e.printStackTrace();
 		}
 	}
-
 }
