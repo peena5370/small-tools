@@ -8,7 +8,7 @@ Local $sFolderPath = $sFileLocation
 Local $bStatus = DirCreate($sFolderPath)
 
 ;moving xml's to backup location
-Local $iMoveStatus = FileMove("C:\XML\*.xml", $sFolderPath, 1)
+Local $iMoveStatus = FileMove("C:\XML\*.xml", $sFolderPath, 1) 
 
 ;Display the status
 If $iMoveStatus Then
